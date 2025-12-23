@@ -30,6 +30,7 @@ const Task = require("./models/Task");
 const User = require("./models/User");
 
 // === Auth helpers (middleware) ===
+
 const { authMiddleware, requireAuth, JWT_SECRET } = require("./middleware/auth");
 
 // === Express app + HTTP server (for WebSocket) ===
@@ -84,6 +85,10 @@ wss.on("connection", async (ws) => {
 });
 
 // === Express middleware ===
+app.get("/", (req, res) => {
+  res.status(200).send("OK");
+});
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -228,7 +233,8 @@ app.post("/logout", (req, res) => {
 // === Protected routes (dashboard + projects) ===
 
 // Dashboard
-app.get("/", async (req, res, next) => {
+app.get("/dashboard", async (req, res, next) => {
+
   if (!req.user) return res.redirect("/login");
 
   try {
