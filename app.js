@@ -16,8 +16,12 @@ const expressLayouts = require("express-ejs-layouts");
 dotenv.config();
 
 // === MongoDB connection ===
-const MONGODB_URI =
-  process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/workspace_db";
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  throw new Error("MONGODB_URI is not defined");
+}
+
 
 mongoose
   .connect(MONGODB_URI)
