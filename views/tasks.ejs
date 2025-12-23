@@ -1,0 +1,67 @@
+<div style="max-width:1200px;">
+
+  <!-- Page Header with Add Task -->
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <div>
+      <h1 style="margin-bottom:4px;">All Tasks</h1>
+      <p style="color:#64748b; margin-top:0;">
+        Tasks across all projects
+      </p>
+    </div>
+
+    <a
+      href="/projects"
+      style="
+        padding:10px 16px;
+        background:#2563eb;
+        color:white;
+        border-radius:10px;
+        text-decoration:none;
+        font-weight:500;
+      "
+    >
+      + Add Task
+    </a>
+  </div>
+
+  <% if (tasks.length === 0) { %>
+    <p style="color:#64748b;">No tasks available.</p>
+  <% } %>
+
+  <div class="projects-grid">
+
+    <% tasks.forEach(task => { %>
+      <div class="card">
+
+        <h3><%= task.title %></h3>
+
+        <p style="color:#64748b;">
+          Project: <%= task.projectTitle %>
+        </p>
+
+        <form
+          action="/tasks/<%= task.id %>/toggle"
+          method="POST"
+        >
+          <button
+            type="submit"
+            style="
+              margin-top:12px;
+              padding:8px 14px;
+              border-radius:8px;
+              border:none;
+              cursor:pointer;
+              background:<%= task.completed ? '#16a34a' : '#2563eb' %>;
+              color:white;
+            "
+          >
+            <%= task.completed ? 'Completed' : 'Mark Complete' %>
+          </button>
+        </form>
+
+      </div>
+    <% }) %>
+
+  </div>
+
+</div>

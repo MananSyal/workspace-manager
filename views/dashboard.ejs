@@ -1,0 +1,83 @@
+<div style="max-width:1200px;">
+
+  <!-- Page Heading -->
+  <div style="margin-bottom:20px;">
+    <h1 style="margin-bottom:4px;">Dashboard</h1>
+    <p class="subtitle">
+      Welcome back! Here's what's happening with your workspace.
+    </p>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats">
+
+    <a href="/projects" class="stat-link">
+      <div class="card stat-card">
+        <div class="stat-icon blue">
+          <i class="fa-solid fa-folder-open"></i>
+        </div>
+        <p>Total Projects</p>
+<h2 id="total-projects"><%= totalProjects %></h2>
+        <small class="hint">View all projects</small>
+      </div>
+    </a>
+
+    <a href="/projects" class="stat-link">
+      <div class="card stat-card">
+        <div class="stat-icon green">
+          <i class="fa-solid fa-list-check"></i>
+        </div>
+        <p>Active Tasks</p>
+<h2 id="total-tasks"><%= totalTasks %></h2>
+        <small class="hint">Across all projects</small>
+      </div>
+    </a>
+
+    <div class="card stat-card">
+      <div class="stat-icon purple">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <p>Logged-in User</p>
+      <h2 style="font-size:22px;"><%= user.name %></h2>
+      <small class="hint">JWT authenticated</small>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-icon orange">
+        <i class="fa-solid fa-chart-line"></i>
+      </div>
+      <p>Completion Rate</p>
+<h2 id="completion-rate"><%= overallCompletion %>%</h2>
+      <small class="hint">Calculated from tasks</small>
+    </div>
+
+  </div>
+
+  <!-- Overview Section -->
+  <div class="charts">
+
+    <div class="card">
+      <h3>📊 Project Status Overview</h3>
+      <p class="desc">
+        All projects and tasks are stored in MongoDB. Any task update
+        directly affects the completion metrics shown above.
+      </p>
+      <p class="desc">
+        This ensures the dashboard always reflects real data.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>⚡ Real-Time Updates</h3>
+      <p class="desc">
+        WebSockets are used to broadcast live project and task statistics
+        to connected clients.
+      </p>
+      <p class="desc">
+        No page refresh is required for updated metrics.
+      </p>
+    </div>
+
+  </div>
+
+</div>

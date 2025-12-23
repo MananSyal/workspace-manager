@@ -1,0 +1,44 @@
+<aside class="sidebar">
+  <div>
+    <h2>PM System</h2>
+    <p class="tech">Node.js + Express.js</p>
+
+  <ul class="menu">
+
+  <li class="<%= currentPath === '/' ? 'active' : '' %>">
+    <a href="/">
+      <i class="fa-solid fa-chart-pie"></i>
+      <span>Dashboard</span>
+    </a>
+  </li>
+
+  <li class="<%= currentPath.startsWith('/projects') ? 'active' : '' %>">
+    <a href="/projects">
+      <i class="fa-solid fa-folder"></i>
+      <span>Projects</span>
+    </a>
+  </li>
+
+  <li class="<%= currentPath.startsWith('/tasks') ? 'active' : '' %>">
+    <a href="/tasks">
+      <i class="fa-solid fa-list-check"></i>
+      <span>Tasks</span>
+    </a>
+  </li>
+
+  <li>
+    <a href="/projects/new">
+      <i class="fa-solid fa-plus"></i>
+      <span>New Project</span>
+    </a>
+  </li>
+
+</ul>
+
+  </div>
+
+  <div class="sidebar-footer">
+    Role: <b>MEMBER</b><br />
+    RBAC Enabled
+  </div>
+</aside>

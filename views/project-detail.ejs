@@ -1,0 +1,101 @@
+<div style="max-width:1200px;">
+
+  <a href="/projects" style="display:inline-block; margin-bottom:16px;">
+    ← Back to projects
+  </a>
+
+  <div class="stats" style="grid-template-columns: 2fr 1fr;">
+
+    <!-- Project Info -->
+    <div class="card">
+      <h2><%= project.name %></h2>
+      <p class="subtitle">
+        <%= project.description || "No description" %>
+      </p>
+
+      <p style="margin-top:20px;">Progress</p>
+      <div style="background:#e5e7eb; border-radius:10px; overflow:hidden;">
+        <div
+          style="
+            width:<%= project.progress %>%;
+            background:#2563eb;
+            color:white;
+            text-align:center;
+            padding:4px 0;
+          "
+        >
+          <%= project.progress %>%
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Task -->
+    <div class="card">
+      <h3>Add Task</h3>
+
+      <form action="/projects/<%= project.id %>/tasks" method="POST">
+        <input
+          type="text"
+          name="title"
+          placeholder="What needs to be done?"
+          required
+          style="width:100%; margin-bottom:12px;"
+        />
+
+        <button
+          type="submit"
+          style="
+            width:100%;
+            padding:10px;
+            background:#2563eb;
+            color:white;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+          "
+        >
+          Add Task
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+  <!-- Tasks List -->
+  <div class="card" style="margin-top:24px;">
+    <h3>Tasks</h3>
+
+    <% if (tasks.length === 0) { %>
+      <p class="subtitle">No tasks added yet.</p>
+    <% } %>
+
+    <% tasks.forEach(task => { %>
+      <form
+        action="/tasks/<%= task._id %>/toggle"
+        method="POST"
+        style="display:flex; align-items:center; gap:12px; margin-bottom:10px;"
+      >
+        <button
+          type="submit"
+          style="
+            background:<%= task.completed ? '#16a34a' : '#e5e7eb' %>;
+            color:white;
+            border:none;
+            border-radius:6px;
+            width:28px;
+            height:28px;
+            cursor:pointer;
+          "
+        >
+          ✓
+        </button>
+
+        <span style="<%= task.completed ? 'text-decoration:line-through;' : '' %>">
+          <%= task.title %>
+        </span>
+      </form>
+    <% }) %>
+
+  </div>
+
+</div>

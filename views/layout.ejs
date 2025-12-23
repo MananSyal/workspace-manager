@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PM System</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome (Icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Dashboard CSS -->
+  <link rel="stylesheet" href="/css/dashboard.css?v=FINAL">
+
+  <!-- Chart.js (kept but unused now – safe) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <div class="app-container">
+
+    <!-- Sidebar -->
+    <%- include('partials/sidebar') %>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+      <!-- Top Navbar -->
+      <%- include('partials/navbar') %>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        <%- body %>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ✅ WebSocket Client -->
+  <script>
+    (function () {
+      const protocol = location.protocol === "https:" ? "wss" : "ws";
+      const socket = new WebSocket(protocol + "://" + location.host);
+
+      socket.onopen = () => {
+        console.log("✅ WebSocket connected");
+      };
+
+      socket.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+
+        if (msg.type === "stats") {
+          const data = msg.data;
+
+          const tp = document.getElementById("total-projects");
+          const tt = document.getElementById("total-tasks");
+          const cr = document.getElementById("completion-rate");
+
+          if (tp) tp.innerText = data.totalProjects;
+          if (tt) tt.innerText = data.totalTasks;
+          if (cr) cr.innerText = data.overallCompletion + "%";
+        }
+      };
+
+      socket.onerror = (err) => {
+        console.error("WebSocket error:", err);
+      };
+    })();
+  </script>
+
+</body>
+</html>

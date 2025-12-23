@@ -1,0 +1,291 @@
+/* ===== Global ===== */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  width: 240px;
+  background: #ffffff;
+  padding: 20px;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.sidebar .tech {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 30px;
+}
+
+.sidebar ul li {
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.sidebar ul li:hover {
+  background: #f1f5f9;
+}
+
+.sidebar ul li.active {
+  background: #eef2ff;
+  color: #2563eb;
+}
+
+.sidebar ul li i {
+  width: 18px;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* ===== Main Content ===== */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Navbar ===== */
+.navbar {
+  background: #ffffff;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.navbar input {
+  width: 45%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  outline: none;
+}
+
+.navbar input:focus {
+  border-color: #2563eb;
+}
+
+.navbar .nav-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.navbar .jwt {
+  color: #16a34a;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* ===== Page Content ===== */
+.page-content {
+  padding: 30px;
+}
+
+/* ===== Stats Cards ===== */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+  margin-top: 24px;
+}
+
+.card {
+  background: #ffffff;
+  padding: 22px;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.04);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.08);
+}
+
+.stats .card p {
+  margin: 0;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.stats .card h2 {
+  margin-top: 8px;
+  font-size: 30px;
+}
+
+/* ===== Charts / Info Cards ===== */
+.charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 34px;
+}
+
+.charts .card h3 {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+.charts .card p {
+  color: #64748b;
+  line-height: 1.6;
+  margin-top: 10px;
+}
+
+/* ===== Responsive (optional but nice) ===== */
+@media (max-width: 1100px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .charts {
+    grid-template-columns: 1fr;
+  }
+
+  .navbar input {
+    width: 60%;
+  }
+}
+.logout-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #0f172a;
+}
+
+.logout-btn:hover {
+  color: #dc2626;
+}
+/* ===== FIX SIDEBAR LINKS ===== */
+.sidebar ul li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.sidebar ul li a span {
+  flex: 1;
+}
+/* ===== Projects Grid ===== */
+.projects-grid {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.progress-bar {
+  background: #e5e7eb;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 6px 0;
+}
+
+.progress-fill {
+  background: #2563eb;
+  height: 100%;
+  border-radius: 999px;
+}
+/* ===== Dashboard Visual Enhancements ===== */
+
+.subtitle {
+  color: #64748b;
+  margin-top: 0;
+}
+
+.stat-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.stat-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-icon {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  font-size: 22px;
+  padding: 10px;
+  border-radius: 12px;
+}
+
+.stat-icon.blue {
+  background: #e0e7ff;
+  color: #2563eb;
+}
+
+.stat-icon.green {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.stat-icon.purple {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.stat-icon.orange {
+  background: #ffedd5;
+  color: #ea580c;
+}
+
+.stat-card:hover {
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+}
+input, textarea {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: inherit;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+.navbar > div:first-child {
+  color: #334155;
+}
+

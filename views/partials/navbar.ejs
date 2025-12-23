@@ -1,0 +1,25 @@
+<nav class="navbar">
+
+  <!-- Greeting -->
+  <div style="font-weight:500; font-size:16px;">
+    👋 Hi, <b><%= user.name %></b>
+  </div>
+
+  <!-- Right Side -->
+  <div class="nav-right">
+
+    <span class="jwt">
+      <i class="fa-solid fa-shield-halved"></i> JWT Active
+    </span>
+
+    <i class="fa-regular fa-bell"></i>
+
+    <!-- Logout -->
+    <form action="/logout" method="POST" style="margin:0;">
+      <button type="submit" class="logout-btn" title="Logout">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </button>
+    </form>
+
+  </div>
+</nav>
