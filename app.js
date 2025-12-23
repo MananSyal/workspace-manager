@@ -102,6 +102,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(authMiddleware);
 
 // === Auth routes ===
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
 
 app.use((req, res, next) => {
   res.locals.currentPath = req.path;
@@ -224,7 +228,9 @@ app.post("/logout", (req, res) => {
 // === Protected routes (dashboard + projects) ===
 
 // Dashboard
-app.get("/", requireAuth, async (req, res, next) => {
+app.get("/", async (req, res, next) => {
+  if (!req.user) return res.redirect("/login");
+
   try {
     const stats = await computeStats();
     res.render("dashboard", stats);
@@ -232,6 +238,7 @@ app.get("/", requireAuth, async (req, res, next) => {
     next(err);
   }
 });
+
 
 // List projects
 app.get("/projects", requireAuth, async (req, res, next) => {
