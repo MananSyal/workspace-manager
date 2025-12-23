@@ -15,18 +15,14 @@ const expressLayouts = require("express-ejs-layouts");
 
 dotenv.config();
 
-// === MongoDB connection ===
 const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  throw new Error("MONGODB_URI is not defined");
-}
-
 
 mongoose
   .connect(MONGODB_URI)
-  .then(() => console.log("✅ Connected to MongoDB:", MONGODB_URI))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => {
+    console.error("❌ MongoDB connection error:", err.message);
+  });
 
 // === Models ===
 const Project = require("./models/Project");
