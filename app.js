@@ -1,4 +1,4 @@
-// app.js - Workspace Manager with auth + WebSockets (Railway-safe)
+// app.js - Workspace Manager (Railway-safe, full version)
 
 const path = require("path");
 const http = require("http");
@@ -21,7 +21,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 mongoose
   .connect(MONGODB_URI)
   .then(() => console.log("✅ Connected to MongoDB"))
-  .catch((err) => console.error("❌ MongoDB error:", err.message));
+  .catch(err => console.error("❌ MongoDB error:", err.message));
 
 /* =========================
    Models
@@ -78,8 +78,8 @@ async function broadcastStats() {
   const stats = await computeStats();
   const msg = JSON.stringify({ type: "stats", data: stats });
 
-  wss.clients.forEach(c => {
-    if (c.readyState === 1) c.send(msg);
+  wss.clients.forEach(client => {
+    if (client.readyState === 1) client.send(msg);
   });
 }
 
@@ -104,7 +104,14 @@ app.set("layout", "layout");
 app.use(express.static(path.join(__dirname, "public")));
 
 /* =========================
-   Railway Health Check
+   RAILWAY ROOT (MUST BE 200)
+========================= */
+app.get("/", (req, res) => {
+  res.status(200).send("OK");
+});
+
+/* =========================
+   Health
 ========================= */
 app.get("/health", (req, res) => {
   res.status(200).send("OK");
@@ -122,45 +129,56 @@ app.use((req, res, next) => {
    Auth Routes
 ========================= */
 app.get("/register", (req, res) => {
-  if (req.user) return res.redirect("/");
+  if (req.user) return res.redirect("/dashboard");
   res.render("register", { layout: "auth-layout", error: null });
 });
 
-app.post("/register", async (req, res, next) => {
-  try {
-    const { name, email, password, confirmPassword } = req.body;
-    if (!name || !email || !password)
-      return res.render("register", { error: "All fields required" });
-    if (password !== confirmPassword)
-      return res.render("register", { error: "Passwords do not match" });
+app.post("/register", async (req, res) => {
+  const { name, email, password, confirmPassword } = req.body;
 
-    if (await User.findOne({ email }))
-      return res.render("register", { error: "Email already exists" });
+  if (!name || !email || !password)
+    return res.render("register", { error: "All fields required" });
 
-    const passwordHash = await bcrypt.hash(password, 10);
-    const user = await new User({ name, email, passwordHash }).save();
+  if (password !== confirmPassword)
+    return res.render("register", { error: "Passwords do not match" });
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
-    res.cookie("token", token, { httpOnly: true });
-    res.redirect("/");
-  } catch (e) {
-    next(e);
-  }
+  if (await User.findOne({ email }))
+    return res.render("register", { error: "Email already exists" });
+
+  const passwordHash = await bcrypt.hash(password, 10);
+  const user = await new User({ name, email, passwordHash }).save();
+
+  const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax"
+  });
+
+  res.redirect("/dashboard");
 });
 
 app.get("/login", (req, res) => {
-  if (req.user) return res.redirect("/");
+  if (req.user) return res.redirect("/dashboard");
   res.render("login", { layout: "auth-layout", error: null });
 });
 
 app.post("/login", async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
+
   if (!user || !(await bcrypt.compare(req.body.password, user.passwordHash)))
     return res.render("login", { error: "Invalid credentials" });
 
   const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
-  res.cookie("token", token, { httpOnly: true });
-  res.redirect("/");
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax"
+  });
+
+  res.redirect("/dashboard");
 });
 
 app.post("/logout", (req, res) => {
@@ -169,14 +187,14 @@ app.post("/logout", (req, res) => {
 });
 
 /* =========================
-   Dashboard (ONLY ROOT ROUTE)
+   Dashboard
 ========================= */
-app.get("/", async (req, res, next) => {
-  if (!req.user) return res.redirect("/login");
+app.get("/dashboard", requireAuth, async (req, res, next) => {
   try {
-    res.render("dashboard", await computeStats());
-  } catch (e) {
-    next(e);
+    const stats = await computeStats();
+    res.render("dashboard", stats);
+  } catch (err) {
+    next(err);
   }
 });
 
@@ -188,9 +206,9 @@ app.get("/projects", requireAuth, async (req, res) => {
   res.render("projects", { projects });
 });
 
-app.get("/projects/new", requireAuth, (req, res) =>
-  res.render("new-project", { error: null })
-);
+app.get("/projects/new", requireAuth, (req, res) => {
+  res.render("new-project", { error: null });
+});
 
 app.post("/projects", requireAuth, async (req, res) => {
   await new Project({
@@ -198,6 +216,7 @@ app.post("/projects", requireAuth, async (req, res) => {
     description: req.body.description,
     progress: 0
   }).save();
+
   await broadcastStats();
   res.redirect("/projects");
 });
@@ -205,11 +224,16 @@ app.post("/projects", requireAuth, async (req, res) => {
 app.get("/projects/:id", requireAuth, async (req, res) => {
   const project = await Project.findById(req.params.id);
   const tasks = await Task.find({ projectId: project._id });
+
   res.render("project-detail", { project, tasks });
 });
 
 app.post("/projects/:id/tasks", requireAuth, async (req, res) => {
-  await new Task({ title: req.body.title, projectId: req.params.id }).save();
+  await new Task({
+    title: req.body.title,
+    projectId: req.params.id
+  }).save();
+
   await broadcastStats();
   res.redirect(`/projects/${req.params.id}`);
 });
@@ -226,6 +250,7 @@ app.post("/tasks/:id/toggle", requireAuth, async (req, res) => {
   const task = await Task.findById(req.params.id);
   task.completed = !task.completed;
   await task.save();
+
   await broadcastStats();
   res.redirect("back");
 });
@@ -247,6 +272,7 @@ app.use((err, req, res, next) => {
    Start Server
 ========================= */
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, "0.0.0.0", () =>
-  console.log(`🚀 Server running on port ${PORT}`)
-);
+
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
