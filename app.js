@@ -126,7 +126,7 @@ app.get("/tasks", requireAuth, async (req, res, next) => {
       projectTitle: task.projectId?.title || "Unknown"
     }));
 
-    res.render("tasks", { tasks });
+res.render("tasks", { tasks: formattedTasks });
   } catch (err) {
     next(err);
   }
@@ -350,7 +350,7 @@ app.post("/tasks/:id/toggle", requireAuth, async (req, res, next) => {
     await task.save();
     await broadcastStats();
 
-    res.redirect("back");
+res.redirect(req.get("Referrer") || "/tasks");
   } catch (err) {
     next(err);
   }
